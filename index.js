@@ -5,7 +5,7 @@ var irc = require('slate-irc'),
     cfg = require('./config')
 
 var ac = cfg.getConfig();
-var db = monk(ac.mongodb.connstr);
+var db = monk(ac.mongo.connstr);
 
 var stream = net.connect({
   port: ac.server.port,
@@ -19,6 +19,54 @@ client.user(ac.who.username, ac.who.realname);
 
 function cibby(irc) {
     var activity = {};
+    var nicks = {};
+    var velocity = {};
+
+    function processLine(channel, str) {
+        // talking about someone on the channel? mix that shit up for confusion
+        if (typeof nicks[channel] === 'object' && nicks[channel].length > 0) {
+            var parts = str.split(' ');
+            for (var i = parts.length - 1; i >= 0; i--) {
+                var chunk = parts[i];
+                chunk = chunk.replace('!', '');
+                chunk = chunk.replace(':', '');
+                chunk = chunk.replace('?', '');
+
+                if (nicks[channel].indexOf(chunk) >= 0) {
+                    str = str.replace(chunk, nicks[channel][Math.floor(Math.random()*nicks[channel].length)]);
+                }
+            };
+        }
+
+        return str;
+    }
+
+    function storeNames(channel, names) {
+        nicks[channel] = [];
+        for (var i = names.length - 1; i >= 0; i--) {
+            nicks[channel].push(names[i].name);
+        };
+    }
+
+    function getVelocity(channel) {
+        var vel = 0, baseSeconds = 180;
+        if (channel in velocity) {
+            vel = velocity[channel];
+        }
+
+        // make it a bit more random
+        if (vel === 1) {
+            vel = vel + (Math.floor((Math.random() * 5) + 1));
+        }
+
+        // really busy?!
+        if (vel > baseSeconds) {
+            return 1000; // just output after one second
+        }
+
+        var calculated = Math.abs(Math.floor(baseSeconds / vel) - (Math.floor((Math.random() * 20) + 1)));
+        return calculated * 1000;
+    }
 
     function runAI(channel) {
         var offset = (24 * 60 * 60 * 1000) * ac.ai.dateThreshold,
@@ -47,7 +95,13 @@ function cibby(irc) {
 
     irc.on('welcome', function() {
         for (var i = ac.server.join.length - 1; i >= 0; i--) {
-            client.join(ac.server.join[i]);
+            var channel = ac.server.join[i];
+            client.join(channel);
+            setInterval(function() {
+                client.names(channel, function(err, names) {
+                    storeNames(channel, names);
+                });
+            }, 10000);
         }
     });
 
@@ -57,22 +111,30 @@ function cibby(irc) {
             return;
         }
 
+        // process
+        var line = processLine(message.to, message.message);
+
         // insert this crap into our database
         var dbt = db.get('messages');
         dbt.insert({
             who: message.from,
             to: message.to,
-            message: message.message,
+            message: line,
             datetime: new Date()
         });
 
-        // set flag to run somewhere between 1 and 180 seconds after this message
+        // increment the velocity counter
+        if (message.to in velocity === false) {
+            velocity[message.to] = 0;
+        }
+        velocity[message.to]++;
+
+        // set flag to run somewhere between 1 and 120 seconds after this message
         if (message.to in activity === false || activity[message.to] === null) {
-            var runAfter = (Math.floor((Math.random() * 180) + 1)) * 1000;
-            console.log('running runAI() after ' + (runAfter / 1000) + ' seconds.');
+            var runAfter = getVelocity(message.to);
             activity[message.to] = setTimeout(function() { runAI(message.to); }, runAfter);
         }
-    })
+    });
 }
 
 client.use(cibby);
