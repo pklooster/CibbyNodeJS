@@ -1,0 +1,24 @@
+{
+  "name": "CibbyNodeJS",
+  "version": "0.0.1",
+  "description": "IRC bot made in NodeJS with some AI shit",
+  "main": "index.js",
+  "dependencies": {
+    "mongodb": "^1.4.10",
+    "slate-irc": "^0.7.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jorijn/cibbynodejs"
+  },
+  "author": "Jorijn Schrijvershof <jorijn@jorijn.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jorijn/cibbynodejs/issues"
+  },
+  "homepage": "https://github.com/jorijn/cibbynodejs"
+}
