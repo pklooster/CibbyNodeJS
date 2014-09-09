@@ -21,6 +21,7 @@ function cibby(irc) {
     var activity = {};
     var nicks = {};
     var velocity = {};
+    var lastnick = {};
 
     function processLine(channel, str) {
         // talking about someone on the channel? mix that shit up for confusion
@@ -33,9 +34,25 @@ function cibby(irc) {
                 chunk = chunk.replace('?', '');
 
                 if (nicks[channel].indexOf(chunk) >= 0) {
-                    str = str.replace(chunk, nicks[channel][Math.floor(Math.random()*nicks[channel].length)]);
+                    str = str.replace(chunk, '<lastnick>');
                 }
             };
+        }
+
+        return str;
+    }
+
+    function processOutgoing(channel, str) {
+        // check if we have record of the last person
+        // who said anything, then use the placeholder to engage
+        // in conversion.
+        if (str.indexOf('<lastnick>') >= 0) {
+            var newname = nicks[channel][Math.floor(Math.random()*nicks[channel].length)]
+            if (channel in lastnick && lastnick[channel].length > 0) {
+                newname = lastnick[channel];
+            }
+
+            str = str.replace('<lastnick>', newname);
         }
 
         return str;
@@ -84,7 +101,7 @@ function cibby(irc) {
             dbt.find(query, { limit: 1, skip: rand }, function(err, res) {
                 if (typeof res[0] === 'object') {
                     // SPLURT
-                    client.send(channel, res[0].message);
+                    client.send(channel, processOutgoing(channel, res[0].message));
                 }
 
                 // reset.
@@ -129,10 +146,15 @@ function cibby(irc) {
         }
         velocity[message.to]++;
 
+        // keep track of the last person speaking
+        // to possible engage in conversation
+        lastnick[message.to] = message.from;
+
         // set flag to run somewhere between 1 and 120 seconds after this message
         if (message.to in activity === false || activity[message.to] === null) {
             var runAfter = getVelocity(message.to);
             activity[message.to] = setTimeout(function() { runAI(message.to); }, runAfter);
+            velocity[message.to] = 0;
         }
     });
 }
