@@ -1,0 +1,16 @@
+module.exports = {
+    getConfig: function() {
+        return {
+            who: {
+                nickname: 'Cibby',
+                username: 'cibby',
+                realname: 'I AM A REAL HUMAN'
+            },
+
+            server: {
+                host: 'irc.freenode.net',
+                port: 6667
+            }
+        };
+    }
+}
