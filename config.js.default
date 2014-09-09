@@ -10,6 +10,17 @@ module.exports = {
             server: {
                 host: 'irc.freenode.net',
                 port: 6667
+                join: [
+                    '#shitpeoplemakethesedays'
+                ]
+            },
+
+            ai: {
+                dateThreshold: 5 // days
+            },
+
+            mongo: {
+                connstr: 'localhost:27017/test1'
             }
         };
     }
