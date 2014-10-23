@@ -8,6 +8,10 @@ module.exports = function() {
             uptime: {
                 level: 'boss',
                 run: function(prefix, target, message) {
+                    var exec = require('child_process').exec;
+                    exec('uptime', function(error, stdout, stderr) {
+                        irc.send(target, stdout)
+                    });
                 }
             },
         };
