@@ -1,27 +1,24 @@
 module.exports = {
-    getConfig: function() {
-        return {
-            who: {
-                nickname: 'Cibby',
-                username: 'cibby',
-                realname: 'I AM A REAL HUMAN'
-            },
+    who: {
+        nickname: 'CibbyB',
+        username: 'cibby',
+        realname: 'I AM A REAL HUMAN'
+    },
 
-            server: {
-                host: 'irc.freenode.net',
-                port: 6667
-                join: [
-                    '#shitpeoplemakethesedays'
-                ]
-            },
+    server: {
+        host: 'what?',
+        port: 6667,
+        join: [
+            '#test'
+        ],
+        theBoss: 'jorijn!jorijn@x'
+    },
 
-            ai: {
-                dateThreshold: 5 // days
-            },
+    ai: {
+        dateThreshold: 5 // days
+    },
 
-            mongo: {
-                connstr: 'localhost:27017/test1'
-            }
-        };
+    mongo: {
+        connstr: 'localhost:27017/db'
     }
-}
+};
