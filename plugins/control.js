@@ -14,6 +14,15 @@ module.exports = function() {
                     });
                 }
             },
+            v: {
+                level: 'boss',
+                run: function(prefix, target, message) {
+                    var exec = require('child_process').exec;
+                    exec('git log --pretty=format:\'%ad %h %d\' --abbrev-commit --date=short -1', function(error, stdout, stderr) {
+                        irc.send(target, 'CIBBY ' + stdout)
+                    });
+                }
+            },
         };
 
         irc.on('data', function(m) {
