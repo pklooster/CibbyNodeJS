@@ -7,6 +7,7 @@ var irc = require('slate-irc'),
 var autojoin = require('./plugins/autojoin.js'),
     ai = require('./plugins/ai.js');
     control = require('./plugins/control.js');
+    traffic = require('./plugins/traffic.js');
 
 // CONNECT
 var stream = net.connect({
@@ -24,3 +25,4 @@ client.user(cfg.who.username, cfg.who.realname);
 client.use(ai());
 client.use(autojoin());
 client.use(control());
+client.use(traffic());
