@@ -2,17 +2,19 @@ var cfg = require('../config');
 var http = require('http');
 
 module.exports = function() {
-    // https://www.flitsmeister.nl/tfd/NGVkZjAwNTQyN2Q0YmE4ODZmYmJiMjE2NzM5MDlhNGI=?0.5101725228596479
-    // TJ = vertraging
-    // ST = flitser
-    //
     return function(irc) {
-        var data;
+        var data, token;
 
-        var options = {
+        var optionsGetUrl = {
           host: 'www.flitsmeister.nl',
           port: 80,
-          path: '/tfd/NGVkZjAwNTQyN2Q0YmE4ODZmYmJiMjE2NzM5MDlhNGI=?0.5101725228596479'
+          path: '/kaart/'
+        };
+
+        var optionsFetch = {
+          host: 'www.flitsmeister.nl',
+          port: 80,
+          path: '/tfd/'
         };
 
         function fm(target, bits) {
@@ -52,24 +54,45 @@ module.exports = function() {
 
         function fmInit() {
             fmDownload();
-            setInterval(fmDownload, 60000);
+            setInterval(fmDownload, 120000);
         }
 
-        function fmDownload() {
-            http.get(options, function(resp){
-                data = [];
+        function fmDownload(hasToken) {
+            if (typeof hasToken === 'undefined' || hasToken !== true) {
+                http.get(optionsGetUrl, function(resp){
+                    data = [];
 
-                resp.setEncoding('utf8');
-                resp.on('data', function(chunk){
-                    data.push(chunk);
-                });
-                resp.on('end', function() {
-                    data = JSON.parse(data.join(''));
-                });
+                    resp.setEncoding('utf8');
+                    resp.on('data', function(chunk){
+                        data.push(chunk);
+                    });
+                    resp.on('end', function() {
+                        token = data.join('').match(/document\.ga\.push\('(.*)'\);/)[1];
+                        optionsFetch.path = optionsFetch.path + token + '?' + Math.random();
 
-            }).on("error", function(e){
-                console.log("Got error: " + e.message);
-            }).end();
+                        fmDownload(true);
+                    });
+
+                }).on("error", function(e){
+                    console.log("Got error: " + e.message);
+                }).end();
+            }
+            else {
+                http.get(optionsFetch, function(resp){
+                    data = [];
+
+                    resp.setEncoding('utf8');
+                    resp.on('data', function(chunk){
+                        data.push(chunk);
+                    });
+                    resp.on('end', function() {
+                        data = JSON.parse(data.join(''));
+                    });
+
+                }).on("error", function(e){
+                    console.log("Got error: " + e.message);
+                }).end();
+            }
         }
 
         irc.on('data', function(m) {
