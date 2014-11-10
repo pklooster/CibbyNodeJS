@@ -58,40 +58,45 @@ module.exports = function() {
         }
 
         function fmDownload(hasToken) {
-            if (typeof hasToken === 'undefined' || hasToken !== true) {
-                http.get(optionsGetUrl, function(resp){
-                    data = [];
+            try {
+                if (typeof hasToken === 'undefined' || hasToken !== true) {
+                    http.get(optionsGetUrl, function(resp){
+                        data = [];
 
-                    resp.setEncoding('utf8');
-                    resp.on('data', function(chunk){
-                        data.push(chunk);
-                    });
-                    resp.on('end', function() {
-                        token = data.join('').match(/document\.ga\.push\('(.*)'\);/)[1];
-                        optionsFetch.path = optionsFetch.path + token + '?' + Math.random();
+                        resp.setEncoding('utf8');
+                        resp.on('data', function(chunk){
+                            data.push(chunk);
+                        });
+                        resp.on('end', function() {
+                            token = data.join('').match(/document\.ga\.push\('(.*)'\);/)[1];
+                            optionsFetch.path = optionsFetch.path + token + '?' + Math.random();
 
-                        fmDownload(true);
-                    });
+                            fmDownload(true);
+                        });
 
-                }).on("error", function(e){
-                    console.log("Got error: " + e.message);
-                }).end();
+                    }).on("error", function(e){
+                        console.log("Got error: " + e.message);
+                    }).end();
+                }
+                else {
+                    http.get(optionsFetch, function(resp){
+                        data = [];
+
+                        resp.setEncoding('utf8');
+                        resp.on('data', function(chunk){
+                            data.push(chunk);
+                        });
+                        resp.on('end', function() {
+                            data = JSON.parse(data.join(''));
+                        });
+
+                    }).on("error", function(e){
+                        console.log("Got error: " + e.message);
+                    }).end();
+                }
             }
-            else {
-                http.get(optionsFetch, function(resp){
-                    data = [];
+            catch (err) {
 
-                    resp.setEncoding('utf8');
-                    resp.on('data', function(chunk){
-                        data.push(chunk);
-                    });
-                    resp.on('end', function() {
-                        data = JSON.parse(data.join(''));
-                    });
-
-                }).on("error", function(e){
-                    console.log("Got error: " + e.message);
-                }).end();
             }
         }
 
