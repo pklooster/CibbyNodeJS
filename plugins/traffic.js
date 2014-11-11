@@ -20,6 +20,11 @@ module.exports = function() {
         function fm(target, bits) {
             var output = [];
 
+            if ('features' in data === false || typeof data.features === 'undefined') {
+                irc.send(target, 'fuck fuck fuck, mijn database is stuk :-|');
+                return;
+            }
+
             if (bits.length <= 0) {
                 output.push('er zijn ' + data.features.length + ' meldingen');
             }
