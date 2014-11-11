@@ -87,7 +87,12 @@ module.exports = function() {
                             data.push(chunk);
                         });
                         resp.on('end', function() {
-                            data = JSON.parse(data.join(''));
+                            try {
+                                data = JSON.parse(data.join(''));
+                            }
+                            catch (e) {
+
+                            }
                         });
 
                     }).on("error", function(e){
