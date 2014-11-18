@@ -6,7 +6,7 @@ module.exports = function() {
 
         var commands = {
             uptime: {
-                level: 'boss',
+                level: 'public',
                 run: function(prefix, target, message) {
                     var exec = require('child_process').exec;
                     exec('uptime', function(error, stdout, stderr) {
@@ -15,7 +15,7 @@ module.exports = function() {
                 }
             },
             v: {
-                level: 'boss',
+                level: 'public',
                 run: function(prefix, target, message) {
                     var exec = require('child_process').exec;
                     exec('git log --pretty=format:\'%ad %h %d\' --abbrev-commit --date=short -1', function(error, stdout, stderr) {
