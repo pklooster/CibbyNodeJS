@@ -96,6 +96,8 @@ module.exports = function() {
             var string = message.message, to = message.to, topic;
             if (string.split(' ')[0].substr(-1) === '?') {
                 topic = string.split(' ')[0].substr(0, (string.split(' ')[0].length - 1))
+                if(topic==''||topic==' ')return;
+                
                 karmaStats(topic, to);
                 return;
             }
