@@ -35,7 +35,9 @@ module.exports = function() {
         function karmaUpdate(string, incdec, to, who) {
             var topic = string.split(' ')[0].substr(0, (string.split(' ')[0].length - 2)),
                 insert = false;
-
+                
+			if(topic.trim().length == 0)return;  
+			
             get(topic, function(num) {
                 if (num === null) {
                     num = 0;
@@ -49,14 +51,14 @@ module.exports = function() {
                 var dbtw = db.get('karma_author');
                 dbtw.insert({ topic: topic, effect: incdec, who: who, ts: new Date() });
 
-                irc.send(to, 'karma voor ' + topic + ' is: ' + newNum);
+                irc.send(to, 'karma voor ' + topic.toLowerCase() + ' is: ' + newNum);
             });
         }
 
         function karmaStats(topic, to) {
             get(topic, function(num) {
                 if (num !== null) {
-                    irc.send(to, 'karma voor ' + topic + ' is: ' + num);
+                    irc.send(to, 'karma voor ' + topic.toLowerCase()  + ' is: ' + num); 
                 }
 
                 var dbtw = db.get('karma_author'),
@@ -95,8 +97,8 @@ module.exports = function() {
 
             var string = message.message, to = message.to, topic;
             if (string.split(' ')[0].substr(-1) === '?') {
-                topic = string.split(' ')[0].substr(0, (string.split(' ')[0].length - 1))
-                 if(topic.trim().length === 0)return; 
+                topic = string.split(' ')[0].substr(0, (string.split(' ')[0].length - 1)) 
+                 if(topic.trim().length == 0)return; 
                 karmaStats(topic, to);
                 return;
             }
