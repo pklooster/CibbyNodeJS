@@ -82,7 +82,7 @@ module.exports = function() {
                             str.push(r.who + ' met ' + (r.effect > 0 ? ('+' + r.effect) : r.effect));
                         };
 
-                        irc.send(to, 'zo denken we over ' + topic + ': ' + str.join(', '));
+                        irc.send(to, 'zo denken we over ' + topic.toLowerCase() + ': ' + str.join(', '));
                     }
                 });
             });
@@ -96,6 +96,7 @@ module.exports = function() {
             var string = message.message, to = message.to, topic;
             if (string.split(' ')[0].substr(-1) === '?') {
                 topic = string.split(' ')[0].substr(0, (string.split(' ')[0].length - 1))
+                 if(topic.trim().length === 0)return; 
                 karmaStats(topic, to);
                 return;
             }
