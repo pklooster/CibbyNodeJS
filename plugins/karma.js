@@ -8,7 +8,7 @@ module.exports = function() {
         var data, token, target;
 
         function get(topic, callback) {
-            var query = { topic: topic }, dbt = db.get('karma');
+            var query = { topic: topic.toLowerCase() }, dbt = db.get('karma');
 
             dbt.find(query, { limit: 1 }, function(err, res) {
                 if (typeof res[0] === 'object') {
@@ -24,10 +24,10 @@ module.exports = function() {
             var dbtk = db.get('karma');
 
             if (insert === true) {
-                dbtk.insert({ topic: topic, karma: num });
+                dbtk.insert({ topic: topic.toLowerCase(), karma: num });
             }
             else {
-                dbtk.update({ topic: topic }, { $set: { karma: num } });
+                dbtk.update({ topic: topic.toLowerCase() }, { $set: { karma: num } });
             }
 
         }
