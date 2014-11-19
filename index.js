@@ -1,5 +1,9 @@
+// DEAMONIZE
+require('daemon')();
+
 // CORE
-var irc = require('slate-irc'),
+var util = require('util'),
+    irc = require('slate-irc'),
     net = require('net'),
     cfg = require('./config');
 
