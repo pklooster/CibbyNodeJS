@@ -21,7 +21,7 @@ module.exports = function() {
                     chunk = chunk.replace('?', '');
 
                     if (nicks[channel].indexOf(chunk) >= 0) {
-                        str = str.replace(chunk, '<lastnick>');
+                        return str.replace(chunk, '<lastnick>');
                     }
                 };
             }
