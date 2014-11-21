@@ -1,6 +1,6 @@
 {
   "name": "CibbyNodeJS",
-  "version": "0.0.1",
+  "version": "0.5.9",
   "description": "IRC bot made in NodeJS with some AI shit",
   "main": "index.js",
   "dependencies": {
