@@ -21,7 +21,7 @@ module.exports = function() {
                     chunk = chunk.replace('?', '');
 
                     if (nicks[channel].indexOf(chunk) >= 0) {
-                        str = str.replace(chunk, '<lastnick>');
+                        return str.replace(chunk, '<lastnick>');
                     }
                 };
             }
@@ -113,7 +113,10 @@ module.exports = function() {
             if (message.to.substr(0, 1) !== '#') {
                 return;
             }
-
+			
+			//Stop if sender is on ignorelist
+			if(cfg.ignoreList.indexOf(message.from) > -1)return;
+			
             // process
             var line = processLine(message.to, message.message);
 
