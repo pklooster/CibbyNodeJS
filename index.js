@@ -13,6 +13,7 @@ var autojoin = require('./plugins/autojoin.js'),
     control = require('./plugins/control.js');
     traffic = require('./plugins/traffic.js');
     karma = require('./plugins/karma.js');
+    bitcoin = require('./plugins/bitcoin.js');
 
 // CONNECT
 var stream = net.connect({
@@ -32,3 +33,4 @@ client.use(autojoin());
 client.use(control());
 client.use(traffic());
 client.use(karma());
+client.use(bitcoin());
