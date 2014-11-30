@@ -26,6 +26,10 @@ module.exports = function() {
                         try {
                             data = JSON.parse(data.join(''));
                             for (key in data.query.results) {
+                                 if (data.query.results[key].LastTradePriceOnly == "0.00") {
+                                    irc.send(target, 'stock '+ticker+' does not exist.');
+                                    return;
+                                }
                                 response.push('[' + data.query.results[key].Name + '] Price: ' + data.query.results[key].LastTradePriceOnly + ' Change: ' + data.query.results[key].Change_PercentChange);
                             }
                             irc.send(target, response.join(', '));
