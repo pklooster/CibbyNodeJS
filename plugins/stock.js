@@ -16,11 +16,11 @@ function checkPrice(price){
 
 module.exports = function() {
     return function(irc) {
-        var data, response, sym;
+        var data, response;
         function get(target, bits) {
             var ticker = bits["1"];
               if (typeof ticker === 'undefined') {
-                    irc.send(target, 'syntax: !stock goog');
+                    irc.send(target, 'syntax: .stock goog');
                     return;
                 }
 
@@ -38,8 +38,10 @@ module.exports = function() {
                         try {
                             data = JSON.parse(data.join(''));
                             for (key in data.query.results) {
-                                if (data.query.results[key].LastTradePriceOnly == "0.00") {
-                                    irc.send(target, c.red('stock '+ticker+' does not exist.'));
+                                	var existStock = data.query.results[key].ErrorIndicationreturnedforsymbolchangedinvalid;
+                                    if (existStock.indexOf('No such ticker') > -1) {
+                                        irc.send(target, c.red('stock '+ticker+' does not exist.'));
+
                                     return;
                                 }
                                 response.push('[' + data.query.results[key].Name + '] Price: ' + data.query.results[key].LastTradePriceOnly + ' Change: ' + checkPrice(data.query.results[key].Change_PercentChange));
@@ -70,7 +72,7 @@ module.exports = function() {
                 var bits = message.split(' ');
 
                 if (command === 'stock' || command == 's') {
-                    get(m.params, bits);
+                    get(m.params, prefix, bits);
                 }
             }
         });
