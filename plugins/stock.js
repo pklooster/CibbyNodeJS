@@ -17,7 +17,7 @@ function checkPrice(price){
 module.exports = function() {
     return function(irc) {
         var data, response;
-        function get(target, bits) {
+        function get(target, prefix, bits) {
             var ticker = bits["1"];
               if (typeof ticker === 'undefined') {
                     irc.send(target, 'syntax: ' + prefix + 'stock goog');
