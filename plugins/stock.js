@@ -20,7 +20,7 @@ module.exports = function() {
         function get(target, bits) {
             var ticker = bits["1"];
               if (typeof ticker === 'undefined') {
-                    irc.send(target, 'syntax: .stock goog');
+                    irc.send(target, 'syntax: ' + prefix + 'stock goog');
                     return;
                 }
 
@@ -72,7 +72,7 @@ module.exports = function() {
                 var bits = message.split(' ');
 
                 if (command === 'stock' || command == 's') {
-                    get(m.params, bits);
+                    get(m.params, prefix, bits);
                 }
             }
         });
