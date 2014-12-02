@@ -72,7 +72,7 @@ module.exports = function() {
                 var bits = message.split(' ');
 
                 if (command === 'stock' || command == 's') {
-                    get(m.params, prefix, bits);
+                    get(m.params, bits);
                 }
             }
         });
